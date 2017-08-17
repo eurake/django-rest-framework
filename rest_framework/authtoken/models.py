@@ -1,3 +1,4 @@
+# coding=utf-8
 import binascii
 import os
 
@@ -11,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 class Token(models.Model):
     """
     The default authorization token model.
+    默认的认证 token 模型
     """
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
     user = models.OneToOneField(

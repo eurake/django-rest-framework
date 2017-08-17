@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Serializers and ModelSerializers are similar to Forms and ModelForms.
 Unlike forms, they are not constrained to dealing with HTML output, and
@@ -83,10 +84,12 @@ ALL_FIELDS = '__all__'
 
 # BaseSerializer
 # --------------
+# 基本的序列化
 
 class BaseSerializer(Field):
     """
     The BaseSerializer class provides a minimal class which may be used
+    这个基本的序列化类, 提供一个一最小化类用于写一个自定义的序列化类的实现
     for writing custom serializer implementations.
 
     Note that we strongly restrict the ordering of operations/properties
@@ -111,8 +114,11 @@ class BaseSerializer(Field):
 
     def __init__(self, instance=None, data=empty, **kwargs):
         self.instance = instance
+        # 如果传过来的参数不为空
         if data is not empty:
             self.initial_data = data
+
+        #
         self.partial = kwargs.pop('partial', False)
         self._context = kwargs.pop('context', {})
         kwargs.pop('many', None)
@@ -129,6 +135,7 @@ class BaseSerializer(Field):
     def many_init(cls, *args, **kwargs):
         """
         This method implements the creation of a `ListSerializer` parent
+        # 实现 ListSerializer 的函数
         class when `many=True` is used. You can customize it if you need to
         control which keyword arguments are passed to the parent, and
         which are passed to the child.
@@ -288,7 +295,7 @@ class BaseSerializer(Field):
 class SerializerMetaclass(type):
     """
     This metaclass sets a dictionary named `_declared_fields` on the class.
-
+    元类
     Any instances of `Field` included as attributes on either the class
     or on any of its superclasses will be include in the
     `_declared_fields` dictionary.
@@ -355,6 +362,7 @@ class Serializer(BaseSerializer):
     def fields(self):
         """
         A dictionary of {field_name: field_instance}.
+        字典
         """
         # `fields` is evaluated lazily. We do this to ensure that we don't
         # have issues importing modules that use ModelSerializers as fields,
@@ -382,6 +390,7 @@ class Serializer(BaseSerializer):
     def get_fields(self):
         """
         Returns a dictionary of {field_name: field_instance}.
+        返回一个字典
         """
         # Every new serializer is created with a clone of the field instances.
         # This allows users to dynamically modify the fields on a serializer
@@ -391,6 +400,7 @@ class Serializer(BaseSerializer):
     def get_validators(self):
         """
         Returns a list of validator callables.
+        返回一个list 验证器回调
         """
         # Used by the lazily-evaluated `validators` property.
         meta = getattr(self, 'Meta', None)
@@ -415,6 +425,7 @@ class Serializer(BaseSerializer):
     def get_value(self, dictionary):
         # We override the default field access in order to support
         # nested HTML forms.
+        # 我们重载了默认的field 防问顺序 用于支持 html
         if html.is_html_input(dictionary):
             return html.parse_html_dict(dictionary, prefix=self.field_name) or empty
         return dictionary.get(self.field_name, empty)
@@ -424,6 +435,7 @@ class Serializer(BaseSerializer):
         We override the default `run_validation`, because the validation
         performed by validators and the `.validate()` method should
         be coerced into an error dictionary with a 'non_fields_error' key.
+        我们重载的默认的这个函数 因为验证器提供的验证的函数 可能会发生错误
         """
         (is_empty_value, data) = self.validate_empty_values(data)
         if is_empty_value:

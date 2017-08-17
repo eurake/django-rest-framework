@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import unicode_literals
 
 import collections
@@ -295,6 +296,8 @@ MISSING_ERROR_MESSAGE = (
     'not exist in the `error_messages` dictionary.'
 )
 
+
+# django 里的Field
 
 class Field(object):
     _creation_counter = 0
